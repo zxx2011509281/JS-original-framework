@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+abc
+</body>
+<script>
+    (function(window){
+        /**
+         * 选择器函数 Sizzle("body")-->{ 0:body,length:1 }
+         * @param selector 选择器
+         * @returns {NodeList}
+         * @constructor
+         */
+        function Sizzle(selector){
+            return document.querySelectorAll(selector);
+        }
+
+        function jQuery(selector){
+            var elements= Sizzle(selector);
+            //简单添加一个方法验证功能是否实现--->实际css方法的实现更加复杂曲折离奇
+            elements.css=function(styleName,styleValue){
+                for (var i = 0; i < this.length; i++) {
+                    var ele = this[i];
+                    ele.style[styleName]=styleValue;
+                    //div.style.color="red";-->div.style["color"]="red"
+                    //var styleName="color"-->div.style[styleName]="red"
+                }
+            }
+            return elements;
+        }
+
+        window.$=window.jQuery=jQuery;
+
+
+    })(window);
+
+    //每一次执行jquery函数，都会产生一次全新的执行环境，在不同的执行环境中创建的局部变量的内存地址不可能相同，所有这2个css方法指向不同的内存地址--->比较结果为false
+    var css1=$("body").css;
+    var css2=$("title").css;
+
+    console.log(css1==css2);//false
+
+
+    $("head");
+    $("script");
+    $("div")
+</script>
+</html>

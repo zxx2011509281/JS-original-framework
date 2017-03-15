@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+<script>
+    //IIFA
+
+    //1、首先将框架代码放在一个自调用函数中，减少了全局变量污染
+    //2、问题：此时的代码对于外界来说是完全不可见的，所以需要给外界提供入口
+    //      a、定义返回值，外界接收
+
+    var jQuery3=(function(){
+        /**
+         * 选择器函数 Sizzle("body")-->{ 0:body,length:1 }
+         * @param selector 选择器
+         * @returns {NodeList}
+         * @constructor
+         */
+        function Sizzle(selector){
+            return document.querySelectorAll(selector);
+        }
+
+        function jQuery(selector){
+            return Sizzle(selector);
+        }
+
+        return jQuery;
+
+
+    })();
+    var $=jQuery;
+
+    //      b、jquery中的做法：在自调用函数内部实现暴露2个全局变量
+    (function(w){
+        /**
+         * 选择器函数 Sizzle("body")-->{ 0:body,length:1 }
+         * @param selector 选择器
+         * @returns {NodeList}
+         * @constructor
+         */
+        function Sizzle(selector){
+            return document.querySelectorAll(selector);
+        }
+
+        function jQuery(selector){
+            return Sizzle(selector);
+        }
+
+        //暴露2个全局变量：把一个变量放在window的属性中，该变量也是全局变量
+//        window.$=jQuery;
+//        window.jQuery=jQuery;
+
+        w.$=w.jQuery=jQuery;
+
+
+    })(window);
+
+    console.log($("*"));
+
+    //$("").css()
+</script>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>abcde</div>
+<div>abc</div>
+<p>12345</p>
+<input type="text"/>
+</body>
+<script>
+    //文件A
+    (function (window) {
+        var arr=[];
+        var push=arr.push;
+        var splice=arr.splice;
+
+        /**
+         * 选择器函数 Sizzle("body")-->{ 0:body,length:1 }
+         * @param selector 选择器
+         * @returns {NodeList}
+         * @constructor
+         */
+        function Sizzle(selector) {
+            return document.querySelectorAll(selector);
+        }
+
+
+        function jQuery(selector) {
+
+            return new jQuery.fn.F(selector);
+        }
+
+
+        jQuery.fn=jQuery.prototype = {
+            constructor: jQuery,
+            F: function (selector) {
+                //将this中原有的DOM元素清空
+                splice.call(this,0,this.length);
+
+                //将elements中的每一个DOM元素以伪数组的形式存放在F的实例(this)中
+
+                //elements:{0:div,1:div,2:div,length:3}
+                push.apply(this,Sizzle(selector));
+
+
+                return this;
+            },
+            css: function (styleName, styleValue) {
+                for (var i = 0; i < this.length; i++) {
+                    var ele = this[i];
+                    ele.style[styleName] = styleValue;
+                }
+
+                //实现链式编程
+                return this;
+            }
+        };
+
+        jQuery.extend=function(){
+            if(arguments.length==0) return this;
+
+            var arg0=arguments[0];
+            if(arguments.length===1){
+                //1、传递一个参数，将参数中的属性和方法分别拷贝到$(this)中
+
+                for (var key in arg0) {
+                    this[key]=arg0[key];
+                }
+                //告知用户拷贝的结果
+                return this;
+
+            }else{
+                //2、传递多个参数，将第二个参数及其后面的所有的参数中的属性和方法分别拷贝到第一个参数中
+                for (var i = 1; i < arguments.length; i++) {
+                    var arg = arguments[i];
+                    //将arg中的属性和方法拷贝到arguments[0]-->arg0
+                    for (var key in arg) {
+                        arg0[key]=arg[key];
+                    }
+                }
+                return arg0;
+                
+            }
+
+
+
+        };
+
+
+        //设置F的原型，指向jquery的原型-->可以让所有的F的实例都可以访问到jquery的原型中的方法
+        jQuery.fn.F.prototype = jQuery.fn;
+
+
+        window.$ = window.jQuery = jQuery;
+
+
+    })(window);
+</script>
+<script src="jquery-combobox.js"></script>
+<script>
+    //1、传递一个参数，将参数中的属性和方法分别拷贝到$中
+    $.extend({a:10,b:20,c:30});//$.a=10 $.b=20 $.c=30
+    //2、传递多个参数，将第二个参数及其后面的所有的参数中的属性和方法分别拷贝到第一个参数中
+    $.extend($,{n1:100},{n2:200},{n3:300,n4:400,n5:500});
+    //  $.n1=100 $.n2=200 $.n3=300 $.n4=400 $.n5=500
+
+
+//    //$.fn.extend
+//    //1、传递一个参数，将参数中的属性和方法分别拷贝到$.fn中
+//    $.fn.extend({a:100,b:200,c:300});//$.fn.a=100
+//
+//    //2、传递多个参数，将第二个参数及其后面的所有的参数中的属性和方法分别拷贝到第一个参数中
+//    $.fn.extend($,{h1:100},{h2:200},{h3:300,h4:400,h5:500});
+</script>
+</html>

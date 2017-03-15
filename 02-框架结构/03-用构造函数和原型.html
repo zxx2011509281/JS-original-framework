@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>abc</div>
+</body>
+<script>
+    (function(window){
+        /**
+         * 选择器函数 Sizzle("body")-->{ 0:body,length:1 }
+         * @param selector 选择器
+         * @returns {NodeList}
+         * @constructor
+         */
+        function Sizzle(selector){
+            return document.querySelectorAll(selector);
+        }
+
+        function F(){
+
+        }
+        F.prototype.css=function(styleName,styleValue){
+            for (var i = 0; i < this.elements.length; i++) {
+                var ele = this.elements[i];
+                ele.style[styleName]=styleValue;
+            }
+        }
+
+        function jQuery(selector){
+            //1、构造F的实例
+            var f1=new F();
+            //2、将elements存放在F的实例中
+            f1.elements= Sizzle(selector);
+            //3、返回F的实例
+            return f1;
+        }
+
+
+        window.$=window.jQuery=jQuery;
+
+
+    })(window);
+
+    //调用$函数产生一个F的实例，该实例的elements属性中保存了一个body标签
+    var $body=$("body");
+    $body.css("fontSize","30px");//F的实例访问到F.prototype中的css方法
+    //调用$函数又产生一个F的实例，该实例的elements属性中保存了一个div标签
+    var $div=$("div");
+    $div.css("color","red");//F的实例访问到F.prototype中的css方法
+
+
+    //上面4行代码相当于：
+//    $("body").css("fontSize","30px");
+//    $("div").css("color","red");
+
+
+    //由于虽然2个不同的F的实例，但是他们访问到的css方法都是属于同一块内存地址，从而节约了内存空间
+</script>
+</html>

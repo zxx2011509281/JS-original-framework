@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>abcde</div>
+<div>abc</div>
+<p>12345</p>
+<input type="text"/>
+</body>
+<script>
+    //文件A
+    (function (window) {
+        var arr=[];
+        var push=arr.push;
+        var splice=arr.splice;
+
+        /**
+         * 选择器函数 Sizzle("body")-->{ 0:body,length:1 }
+         * @param selector 选择器
+         * @returns {NodeList}
+         * @constructor
+         */
+        function Sizzle(selector) {
+            return document.querySelectorAll(selector);
+        }
+
+
+        function jQuery(selector) {
+
+            return new jQuery.prototype.F(selector);
+        }
+
+
+        jQuery.prototype = {
+            constructor: jQuery,
+            F: function (selector) {
+                //将this中原有的DOM元素清空
+                splice.call(this,0,this.length);
+
+                //将elements中的每一个DOM元素以伪数组的形式存放在F的实例(this)中
+
+                //elements:{0:div,1:div,2:div,length:3}
+                push.apply(this,Sizzle(selector));
+
+
+                return this;
+            },
+            css: function (styleName, styleValue) {
+                for (var i = 0; i < this.length; i++) {
+                    var ele = this[i];
+                    ele.style[styleName] = styleValue;
+                }
+
+                //实现链式编程
+                return this;
+            }
+        };
+
+        //设置F的原型，指向jquery的原型-->可以让所有的F的实例都可以访问到jquery的原型中的方法
+        jQuery.prototype.F.prototype = jQuery.prototype;
+
+
+        window.$ = window.jQuery = jQuery;
+
+
+    })(window);
+</script>
+<script src="jquery-combobox.js"></script>
+<script>
+
+    //想给div设置字体颜色，想给p设置字体大小
+//    $("div").css("color", "red");
+//
+//    $("p").css("fontSize", "30px");
+
+    //以上代码用2块内存操作不同的实例，为了进一步节约内存，jquery把F放在jquery.prototype中
+    $("div").css("color", "red").F("p").css("fontSize", "30px").F("input").css("backgroundColor","pink");
+</script>
+</html>

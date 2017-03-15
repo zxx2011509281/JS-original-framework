@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>abc</div>
+</body>
+<script>
+    //文件A
+    (function (window) {
+        /**
+         * 选择器函数 Sizzle("body")-->{ 0:body,length:1 }
+         * @param selector 选择器
+         * @returns {NodeList}
+         * @constructor
+         */
+        function Sizzle(selector) {
+            return document.querySelectorAll(selector);
+        }
+
+        function F(selector) {
+            this.elements = Sizzle(selector);
+        }
+
+        function jQuery(selector) {
+
+            return new F(selector);
+        }
+
+
+
+        jQuery.prototype = {
+            constructor: jQuery,
+            css: function (styleName, styleValue) {
+                for (var i = 0; i < this.elements.length; i++) {
+                    var ele = this.elements[i];
+                    ele.style[styleName] = styleValue;
+                }
+            }
+        };
+
+        //设置F的原型，指向jquery的原型-->可以让所有的F的实例都可以访问到jquery的原型中的方法
+        F.prototype = jQuery.prototype;
+
+
+        window.$ = window.jQuery = jQuery;
+
+
+    })(window);
+</script>
+<script src="jquery-combobox.js"></script>
+<script>
+    $("div").css("color","red");
+    $("div").combobox();
+</script>
+</html>

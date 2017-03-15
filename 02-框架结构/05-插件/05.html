@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>abc</div>
+</body>
+<script>
+    //文件A
+    (function(window){
+        /**
+         * 选择器函数 Sizzle("body")-->{ 0:body,length:1 }
+         * @param selector 选择器
+         * @returns {NodeList}
+         * @constructor
+         */
+        function Sizzle(selector){
+            return document.querySelectorAll(selector);
+        }
+
+        function F(selector){
+            this.elements=Sizzle(selector);
+        }
+        F.prototype={
+            constructor:F,
+            css:function(styleName,styleValue){
+                for (var i = 0; i < this.elements.length; i++) {
+                    var ele = this.elements[i];
+                    ele.style[styleName]=styleValue;
+                }
+            }
+        };
+
+        function jQuery(selector){
+//            //1、构造F的实例
+//            var f1=new F(selector);
+//            //3、返回F的实例
+//            return f1;
+
+            return new F(selector);
+        }
+
+
+        window.$=window.jQuery=jQuery;
+
+
+    })(window);
+</script>
+<script src="jquery-combobox.js"></script>
+<script>
+
+    //文件B：是不是访问到F的
+    //var $1=$(); $1.__prto__.combobox=function(){};
+
+    //调用$函数产生一个F的实例，该实例的elements属性中保存了一个body标签
+    var $body=$("body");
+    $body.css("fontSize","30px");//F的实例访问到F.prototype中的css方法
+    //调用$函数又产生一个F的实例，该实例的elements属性中保存了一个div标签
+    var $div=$("div");
+    $div.css("color","red");//F的实例访问到F.prototype中的css方法
+
+    $("div").combobox();
+</script>
+</html>
