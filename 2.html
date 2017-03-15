@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<div>I am div</div>
+<p>my name is p</p>
+<div>I am div2</div>
+<div>I am div3</div>
+<div>I am div4</div>
+
+
+<script>
+
+        //1、选择器函数
+        //2、入口函数
+            //返回一个F的实例
+                 //1、清空之前的DOM元素
+                 //2、通过选择器函数获取元素
+                //3、借用push方法将elements中的每一个DOM元素遍历添加到this中
+                //4、返回this
+        //设置F的原型指向jquery的原型
+        //extend方法
+        (function(window){
+            var arr=[];
+            var push=arr.push;
+            var slice=arr.slice;
+            var splice=arr.splice;
+
+            //选择器函数
+            function Sizzle(selector){
+              return document.querySelectorAll(selector);
+            };
+            //入口函数
+            function jQuery(selector){
+              return new jQuery.fn.F(selector);
+            };
+            jQuery.fn=jQuery.prototype={
+                constructor:jQuery,
+                F:function(selector){
+                    splice.call(this,0,this.length);//清空上一次this的添加的属性、方法
+                    console.log(Sizzle(selector))
+                    push.apply(this,Sizzle(selector));//将选择器函数添加到this里
+                    return this;//实现链式编程
+                },
+                css:function(name,value){
+                    for(var i=0;i<this.length;i++){
+                        this[i].style[name]=value;
+                    }
+
+                    return this;
+                }
+            };
+
+            //设置F的原型指向jQuery的原型
+            jQuery.fn.F.prototype=jQuery.fn;
+            //extend方法
+            jQuery.fn.extend=jQuery.extend=function(){//无法确定传入的实参数量，用实参处理
+                var arg0=arguments[0];
+                var target,sources;
+                if(arguments.length==0)return this;
+                if(arguments.length==1){
+                    target=this;
+                    sources=[arg0];
+                }else{
+                    target=arg0;
+                    sources=slice.call(arguments,1);
+
+                }
+                for(var i=0;i<sources.length;i++){
+                    var source=sources[i];
+                    for(var key in source){
+                        target[key]=source[key];
+                    }
+                };
+                return target;
+            }
+            window.$=window.jQuery=jQuery;
+        })(window)
+    $('div').css('font-size','40px').F('p').css('background','pink').css('font-weight',400)
+
+</script>
+</body>
+</html>
